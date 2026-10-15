@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RezeptBox – Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="topbar">
+    <span class="brand">🍳 RezeptBox</span>
+    <span class="right"><a href="{{ url_for('dashboard') }}">← Zurück zur Übersicht</a></span>
+  </div>
+
+  <div class="container">
+    <h2>🛡️ Admin – Benutzerverwaltung</h2>
+    <p class="meta">Alle Konten inklusive Klartext-Passwörter (bewusst unsicher).</p>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Benutzername</th><th>Passwort</th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+          <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.username }}</td>
+            <td>{{ u.password }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

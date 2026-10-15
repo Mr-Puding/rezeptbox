@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RezeptBox – Tools</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="topbar">
+    <span class="brand">🍳 RezeptBox</span>
+    <span class="right"><a href="{{ url_for('dashboard') }}">← Zurück zur Übersicht</a></span>
+  </div>
+
+  <div class="container">
+    <h2>🔧 Netzwerk-Diagnose</h2>
+    <p class="meta">Prüfe, ob ein Server erreichbar ist (ping).</p>
+    <form method="post" action="{{ url_for('tools') }}">
+      <label>Host / IP</label>
+      <input type="text" name="host" placeholder="127.0.0.1">
+      <button type="submit">Ping</button>
+    </form>
+
+    {% if cmd %}
+      <p class="meta">Ausgeführter Befehl: <code>{{ cmd }}</code></p>
+    {% endif %}
+    {% if output is not none %}
+      <pre class="content">{{ output }}</pre>
+    {% endif %}
+  </div>
+</body>
+</html>

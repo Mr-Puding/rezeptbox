@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RezeptBox – Registrieren</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="card">
+    <h1>🍳 RezeptBox</h1>
+    <p class="sub">Neues Konto anlegen.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, msg in messages %}
+        <div class="flash {{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="post" action="{{ url_for('register') }}">
+      <label>Benutzername</label>
+      <input type="text" name="username" autocomplete="off">
+      <label>Passwort</label>
+      <input type="text" name="password" autocomplete="off">
+      <label>Passwort wiederholen</label>
+      <input type="text" name="password2" autocomplete="off">
+      <button type="submit">Registrieren</button>
+    </form>
+
+    <p class="muted">Schon ein Konto? <a href="{{ url_for('login') }}">Anmelden</a></p>
+
+    {% if debug_query %}
+      <div class="debug">
+        <strong>Ausgeführtes SQL (Lernhinweis):</strong>
+        <code>{{ debug_query }}</code>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

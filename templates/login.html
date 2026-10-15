@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RezeptBox – Anmelden</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="card">
+    <h1>🍳 RezeptBox</h1>
+    <p class="sub">Melde dich an, um Rezepte zu teilen.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, msg in messages %}
+        <div class="flash {{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="post" action="{{ url_for('login') }}">
+      {# BEWUSST UNSICHER: ungeprüftes Redirect-Ziel (Open Redirect) #}
+      <input type="hidden" name="next" value="{{ next_url }}">
+      <label>Benutzername</label>
+      <input type="text" name="username" autocomplete="off">
+      <label>Passwort</label>
+      <input type="text" name="password" autocomplete="off">
+      <button type="submit">Anmelden</button>
+    </form>
+
+    <p class="muted">Noch kein Konto? <a href="{{ url_for('register') }}">Registrieren</a></p>
+
+    {% if debug_query %}
+      <div class="debug">
+        <strong>Ausgeführtes SQL (Lernhinweis):</strong>
+        <code>{{ debug_query }}</code>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Laufzeit-Datenbank (wird beim Start automatisch neu erzeugt)
+rezepte.db
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

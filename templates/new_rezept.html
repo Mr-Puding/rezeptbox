@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RezeptBox – Neues Rezept</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="topbar">
+    <span class="brand">🍳 RezeptBox</span>
+    <span class="right"><a href="{{ url_for('dashboard') }}">← Zurück zur Übersicht</a></span>
+  </div>
+
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, msg in messages %}
+        <div class="flash {{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <h2>Neues Rezept</h2>
+    <form method="post" action="{{ url_for('new_rezept') }}">
+      <label>Titel</label>
+      <input type="text" name="title">
+      <label>Zutaten &amp; Zubereitung</label>
+      <textarea name="content" rows="8"></textarea>
+      <button type="submit">Speichern</button>
+    </form>
+  </div>
+</body>
+</html>
