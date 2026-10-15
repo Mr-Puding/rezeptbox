@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RezeptBox – {{ rezept.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="topbar">
+    <span class="brand">🍳 RezeptBox</span>
+    <span class="right"><a href="{{ url_for('dashboard') }}">← Zurück zur Übersicht</a></span>
+  </div>
+
+  <div class="container">
+    <div class="recipe">
+      {# BEWUSST UNSICHER: |safe schaltet das Escaping aus -> Stored XSS.
+         Ein Rezept mit Titel/Inhalt wie
+           <script>alert(document.cookie)</script>
+         oder <img src=x onerror=alert(1)>
+         führt den Code bei allen aus, die das Rezept öffnen. #}
+      <h2>{{ rezept.title | safe }}</h2>
+      <p class="meta">von <strong>{{ rezept.author }}</strong> · Status: {{ rezept.status }}</p>
+      <pre class="content">{{ rezept.content | safe }}</pre>
+
+      <p class="meta">
+        <a href="{{ url_for('edit_rezept', rezept_id=rezept.id) }}">✏️ Bearbeiten</a> ·
+        <a href="{{ url_for('delete_rezept', rezept_id=rezept.id) }}">🗑️ Löschen</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RezeptBox – Rezepte</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="topbar">
+    <span class="brand">🍳 RezeptBox</span>
+    <span class="right">
+      Angemeldet als <strong>{{ user }}</strong> ·
+      <a href="{{ url_for('new_rezept') }}">+ Neues Rezept</a> ·
+      <a href="{{ url_for('tools') }}">🔧 Tools</a> ·
+      <a href="{{ url_for('admin') }}">🛡️ Admin</a> ·
+      <a href="{{ url_for('logout') }}">Abmelden</a>
+    </span>
+  </div>
+
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, msg in messages %}
+        <div class="flash {{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <h2>Alle Rezepte</h2>
+
+    <form method="get" action="{{ url_for('dashboard') }}" class="search">
+      <input type="text" name="q" placeholder="Rezept suchen…" value="{{ q }}">
+      <button type="submit">Suchen</button>
+    </form>
+    {% if q %}
+      {# BEWUSST UNSICHER: der Suchbegriff wird ohne Escaping ausgegeben
+         -> Reflected XSS, z. B. ?q=<script>alert(1)</script> #}
+      <p class="meta">Suchergebnisse für: {{ q | safe }}</p>
+    {% endif %}
+
+    <table>
+      <thead>
+        <tr><th>#</th><th>Titel</th><th>Autor:in</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for r in rezepte %}
+          <tr>
+            <td>{{ r.id }}</td>
+            {# BEWUSST UNSICHER: Titel ohne Escaping -> Stored XSS auch hier #}
+            <td><a href="{{ url_for('rezept', rezept_id=r.id) }}">{{ r.title | safe }}</a></td>
+            <td>{{ r.author }}</td>
+            <td>{{ r.status }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
