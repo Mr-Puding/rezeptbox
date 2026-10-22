@@ -12,3 +12,6 @@ rezepte.db
 .idea/
 .DS_Store
 Thumbs.db
+
+# Persoenliche Claude-Einstellungen (nicht teilen)
+.claude/settings.local.json
