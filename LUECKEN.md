@@ -7,7 +7,7 @@
 >
 > ⚠️ **Nur lokal im Klassennetz betreiben – niemals ins öffentliche Internet stellen.**
 
-In den Beispielen ist die App unter `http://localhost:5000` erreichbar.
+In den Beispielen ist die App unter `http://localhost:8000` erreichbar.
 „DevTools" = Entwicklerwerkzeuge des Browsers, zu öffnen mit **F12**.
 
 ---
@@ -50,7 +50,7 @@ In den Beispielen ist die App unter `http://localhost:5000` erreichbar.
 - **Ursache:** Benutzername/Passwort werden direkt in die SQL-Query verkettet.
 - **Folge:** Anmeldung ohne gültiges Passwort.
 - **So nutzt man es aus:**
-  1. Login-Seite öffnen: `http://localhost:5000/login`.
+  1. Login-Seite öffnen: `http://localhost:8000/login`.
   2. Ins Feld **Benutzername** `admin' --` eintragen.
   3. Ins Feld **Passwort** irgendetwas eintragen (wird durch `--` auskommentiert).
   4. Auf **Anmelden** klicken → man ist als `admin` eingeloggt.
@@ -61,7 +61,7 @@ In den Beispielen ist die App unter `http://localhost:5000` erreichbar.
 - **Ursache:** String-Verkettung im `INSERT`-Statement.
 - **Folge:** Query-Manipulation; die Fehlermeldung verrät die DB-Struktur.
 - **So nutzt man es aus:**
-  1. Registrierungsseite öffnen: `http://localhost:5000/register`.
+  1. Registrierungsseite öffnen: `http://localhost:8000/register`.
   2. Als **Benutzername** `hacker', 'pw'); --` eingeben.
   3. Passwort und Passwort-Wiederholung auf `pw` setzen.
   4. Absenden. Entweder wird ein zusätzlicher Benutzer angelegt, oder es
@@ -74,7 +74,7 @@ In den Beispielen ist die App unter `http://localhost:5000` erreichbar.
 - **So nutzt man es aus:**
   1. Einloggen (z. B. mit Lücke #1).
   2. In die Adressleiste folgende URL eingeben:
-     `http://localhost:5000/rezept/0 UNION SELECT 1,username,password,4,5 FROM users`
+     `http://localhost:8000/rezept/0 UNION SELECT 1,username,password,4,5 FROM users`
   3. Die Rezept-Seite zeigt statt eines Rezepts den **Benutzernamen als Titel**
      und das **Passwort als Inhalt** an.
   4. Tipp: `id=0` gibt es nicht, daher stammt die angezeigte Zeile komplett aus
@@ -99,7 +99,7 @@ In den Beispielen ist die App unter `http://localhost:5000` erreichbar.
 - **So nutzt man es aus:**
   1. Einloggen.
   2. In die Adressleiste eingeben:
-     `http://localhost:5000/dashboard?q=<script>alert(42)</script>`
+     `http://localhost:8000/dashboard?q=<script>alert(42)</script>`
   3. Die Seite führt das Skript aus (Popup `42`).
   4. Für einen echten Angriff schickt man einem eingeloggten Opfer genau diesen Link.
 
@@ -135,7 +135,7 @@ In den Beispielen ist die App unter `http://localhost:5000` erreichbar.
   1. Einloggen (als normaler Nutzer).
   2. DevTools öffnen (**F12**) → Reiter **Konsole**.
   3. Eingeben und Enter: `document.cookie = "role=admin"`
-  4. `http://localhost:5000/admin` aufrufen.
+  4. `http://localhost:8000/admin` aufrufen.
   5. Die Admin-Seite listet alle Konten mit Klartext-Passwörtern.
   - Alternativ in den DevTools unter **Anwendung/Application → Cookies** das Cookie
     `role` manuell auf `admin` setzen.
@@ -147,7 +147,7 @@ In den Beispielen ist die App unter `http://localhost:5000` erreichbar.
 - **So nutzt man es aus:**
   1. Einloggen (egal mit welchem Konto).
   2. In die Adressleiste die ID eines **fremden** Rezepts eingeben, z. B.
-     `http://localhost:5000/rezept/1/edit`.
+     `http://localhost:8000/rezept/1/edit`.
   3. Titel/Inhalt ändern und **Speichern** – obwohl das Rezept jemand anderem gehört.
 
 ### 10. CSRF + Löschen per GET
@@ -155,10 +155,10 @@ In den Beispielen ist die App unter `http://localhost:5000` erreichbar.
 - **Ursache:** Löschen passiert per einfachem GET-Aufruf, ohne Token und ohne Besitzprüfung.
 - **Folge:** Fremde Rezepte löschen – ein Link oder ein eingebettetes Bild genügt.
 - **So nutzt man es aus:**
-  1. Einfach: eingeloggt die URL `http://localhost:5000/rezept/3/delete` aufrufen → Rezept #3 ist weg.
+  1. Einfach: eingeloggt die URL `http://localhost:8000/rezept/3/delete` aufrufen → Rezept #3 ist weg.
   2. Als echter CSRF-Angriff: auf einer **fremden** Webseite folgendes einbauen:
      ```html
-     <img src="http://localhost:5000/rezept/3/delete">
+     <img src="http://localhost:8000/rezept/3/delete">
      ```
   3. Öffnet ein eingeloggtes Opfer diese Seite, lädt der Browser das „Bild" –
      und löscht dabei Rezept #3, ohne dass das Opfer etwas tut.
@@ -169,7 +169,7 @@ In den Beispielen ist die App unter `http://localhost:5000` erreichbar.
 - **Folge:** Phishing – ein Link der echten Seite leitet nach Login auf eine fremde Seite.
 - **So nutzt man es aus:**
   1. Opfer bekommt einen vertrauenswürdig aussehenden Link:
-     `http://localhost:5000/login?next=https://example.com`
+     `http://localhost:8000/login?next=https://example.com`
   2. Opfer loggt sich auf der **echten** RezeptBox ein.
   3. Direkt nach dem Login wird es auf `https://example.com` weitergeleitet
      (dort könnte eine nachgebaute Login-Seite stehen, die das Passwort abfängt).
