@@ -21,11 +21,21 @@ Schwachstellen praktisch finden und ausnutzen.
   ```
 
 ## Starten / Stoppen
-- **Starten (empfohlen, Zero-Setup):**
+- **Starten im Netz (empfohlen für die Schulung):** `start.ps1`
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File .\start.ps1
+  ```
+  Öffnet automatisch die Windows-Firewall-Regel für TCP 8000 (ein UAC-„Ja"),
+  startet den Server (SQLite) und **entfernt die Regel beim Beenden (Strg+C)
+  wieder** (nochmal UAC-„Ja"). Der Server läuft dabei bewusst **ohne** Admin-Rechte;
+  nur das Firewall-Kommando wird kurz elevated. Danach erreichbar im Klassen-WLAN
+  unter `http://<WLAN-IP>:8000`.
+- **Starten nur lokal (Zero-Setup, ohne Firewall):**
   ```bash
   DB_BACKEND=sqlite python app.py
   ```
-  Läuft auf `http://0.0.0.0:5000` mit `debug=True` (Auto-Reload an).
+  Läuft auf `http://0.0.0.0:8000` mit `debug=True` (Auto-Reload an). Bindet zwar an
+  alle Interfaces, ist aber ohne Firewall-Regel von außen meist nicht erreichbar.
   `DB_BACKEND` ist standardmäßig `mysql`; für MySQL siehe `README.md`.
 - **SQLite-DB** `rezepte.db` wird von `init_db()` automatisch angelegt (Seed-Daten).
   Löschen = kompletter Reset auf Startzustand.
@@ -37,12 +47,12 @@ Schwachstellen praktisch finden und ausnutzen.
     Where-Object { $_.CommandLine -like '*app.py*' } |
     ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
   ```
-  Danach prüfen, dass Port 5000 frei ist (`Get-NetTCPConnection -LocalPort 5000`).
+  Danach prüfen, dass Port 8000 frei ist (`Get-NetTCPConnection -LocalPort 8000`).
 
 ## Umgebung
 - **Windows 11**, primäre Shell **PowerShell** (Bash-Tool vorhanden, eigene Syntax).
 - `taskkill` ist im Bash-PATH nicht verfügbar → zum Prozessbeenden PowerShell nutzen.
-- Server-IP im Klassen-WLAN zuletzt `141.87.60.99:5000` (WLAN-Adapter). Die anderen
+- Server-IP im Klassen-WLAN zuletzt `141.87.60.80:8000` (WLAN-Adapter). Die anderen
   IPs (`192.168.56.1`, `172.17.*`, …) sind virtuelle Adapter von VirtualBox/Hyper-V.
   IP kann je Netz wechseln → aktuelle holen mit `Get-NetIPAddress -AddressFamily IPv4`.
 
@@ -60,7 +70,7 @@ Schwachstellen praktisch finden und ausnutzen.
 1. `app.py` (oder Template) ändern + `!!! BEWUSST UNSICHER !!!`-Kommentar.
 2. `LUECKEN.md`: Zeile in die Übersichtstabelle **und** einen Detail-Block
    (Ursache, Folge, „So nutzt man es aus"-Schritte) ergänzen.
-3. `CHALLENGES.md`: passende Challenge mit Adresse (`http://<IP>:5000/...`) ergänzen.
+3. `CHALLENGES.md`: passende Challenge mit Adresse (`http://<IP>:8000/...`) ergänzen.
 4. Changelog-Eintrag in `LUECKEN.md` mit Datum.
 
 ## Test-Accounts

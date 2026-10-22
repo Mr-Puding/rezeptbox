@@ -25,10 +25,10 @@ set DB_BACKEND=sqlite        # Windows (cmd)
 python app.py
 ```
 
-Dann im Browser öffnen: <http://localhost:5000>
+Dann im Browser öffnen: <http://localhost:8000>
 
 Die Datei `rezepte.db` wird automatisch mit Tabellen und Beispieldaten angelegt.
-Mit `set PORT=5001` lässt sich ein anderer Port wählen (z. B. um parallel zum
+Mit `set PORT=8001` lässt sich ein anderer Port wählen (z. B. um parallel zum
 Ticketsystem zu laufen).
 
 ---
