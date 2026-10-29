@@ -15,3 +15,7 @@ Thumbs.db
 
 # Persoenliche Claude-Einstellungen (nicht teilen)
 .claude/settings.local.json
+
+# Challenge-Loesungen: NIE auf GitHub (nur lokal fuer Lehrende)
+doku/CHALLENGE-LOESUNGEN.md
+doku/LUECKEN.md

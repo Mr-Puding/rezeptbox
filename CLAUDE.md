@@ -117,6 +117,22 @@ Schwachstellen praktisch finden und ausnutzen.
 - `curl` führt **zwei** `-b`-Optionen nicht zusammen; für Cookie + Session gemeinsam
   einen kombinierten String nutzen (`-b "session=...; role=admin"`).
 
+## Lösungen bleiben lokal (NICHT auf GitHub)
+- **Diese Dateien dürfen nie gepusht werden** (stehen in `.gitignore`):
+  - `doku/CHALLENGE-LOESUNGEN.md` – alle Challenge-Lösungen.
+  - `doku/LUECKEN.md` – vollständige Lückenliste mit Schritt-für-Schritt-Exploits.
+- In `doku/CHALLENGE-LOESUNGEN.md` liegen zusätzlich (aus dem README verschoben):
+  die **Test-Passwörter**, das **SQL-Injection-Cheat-Sheet** und die Tabelle der
+  Lücken-Fundorte. Auch das bleibt lokal.
+- Das öffentliche `doku/README.md` enthält nur Setup, keine Lösungen/Passwörter.
+- **Regel:** Keine Lösungen, Passwörter oder konkreten Exploit-Payloads in getrackte
+  Dateien schreiben. Neue Lösungstexte nur in die beiden gitignoreten Dateien.
+- **Ehrlich zu den Grenzen:** (1) Die Dateien waren vor dieser Änderung schon einmal
+  gepusht → über die **Git-Historie** (alte Commits) auf GitHub weiter abrufbar;
+  bewusst **nicht** bereinigt (kein History-Rewrite). (2) Der App-Quellcode in
+  `server/` ist öffentlich und verrät Mechanik, Seed-Passwörter und `secret_key`
+  ohnehin. Das Ausblenden betrifft nur die ausformulierten Lösungen.
+
 ## Git
 - Commit-Messages auf Deutsch, am Ende:
   `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>`
