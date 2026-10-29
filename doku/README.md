@@ -18,12 +18,18 @@ sind aber dieselben.
 
 ## 1. Schnellstart (ohne MySQL, läuft sofort)
 
+Alle Server-Dateien liegen im Unterordner `server/`. Vom Projekt-Wurzelordner aus:
+
 ```bash
 pip install Flask
+cd server
 set DB_BACKEND=sqlite        # Windows (cmd)
 # export DB_BACKEND=sqlite   # macOS / Linux
 python app.py
 ```
+
+Empfohlen für die Schulung (im Netz erreichbar, Firewall automatisch):
+`powershell -ExecutionPolicy Bypass -File .\server\start.ps1`
 
 Dann im Browser öffnen: <http://localhost:8000>
 
@@ -35,8 +41,11 @@ Ticketsystem zu laufen).
 
 ## 2. Start mit MySQL
 
+Vom Projekt-Wurzelordner aus (`schema.sql` liegt in `doku/`):
+
 ```bash
-mysql -u root -p < schema.sql
+mysql -u root -p < doku/schema.sql
+cd server
 pip install -r requirements.txt
 set DB_BACKEND=mysql
 set DB_HOST=127.0.0.1
@@ -116,16 +125,25 @@ Alle Stellen stehen in `app.py` und sind mit `!!! BEWUSST UNSICHER !!!` markiert
 
 ```
 rezeptbox/
-├── app.py              # Flask-App (enthält die bewussten Lücken)
-├── schema.sql          # MySQL-Schema + Beispieldaten
-├── requirements.txt
-├── README.md
-├── static/
-│   └── style.css
-└── templates/
-    ├── login.html
-    ├── register.html
-    ├── dashboard.html
-    ├── rezept.html
-    └── new_rezept.html
+├── CLAUDE.md            # Hinweise für Claude Code (Projekt-Wurzel)
+├── server/             # NUR Betrieb – daraus wird der Server gestartet
+│   ├── app.py          # Flask-App (enthält die bewussten Lücken)
+│   ├── requirements.txt
+│   ├── start.ps1       # Start im Netz (öffnet Firewall-Port 8000)
+│   ├── stop.ps1        # Server beenden + Port schließen
+│   ├── rezepte.db      # Laufzeit-DB (wird automatisch erzeugt, gitignored)
+│   ├── static/
+│   │   └── style.css
+│   └── templates/
+│       ├── login.html
+│       ├── register.html
+│       ├── dashboard.html
+│       ├── rezept.html
+│       └── new_rezept.html
+└── doku/               # Doku + LÖSUNGEN – nicht im Server-Verzeichnis,
+    ├── README.md       #   damit sie über die RCE-Lücken nicht einsehbar sind
+    ├── schema.sql      # MySQL-Schema + Beispieldaten
+    ├── CHALLENGES.md   # Aufgabenblatt (ohne Lösungen)
+    ├── CHALLENGE-LOESUNGEN.md
+    └── LUECKEN.md      # vollständige Lückenliste mit Lösungen
 ```

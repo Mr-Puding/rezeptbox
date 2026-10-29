@@ -448,6 +448,75 @@ def admin():
     return render_template("admin.html", users=users)
 
 
+# ===================================================================
+# !!! SIMULIERTE Command Injection (bewusst entschaerft) !!!
+# Frueher ging die Eingabe direkt an os.popen -> echte Befehle liefen
+# auf dem Host. Zum Schutz des Laptops wird hier NICHTS mehr echt
+# ausgefuehrt: _simuliere_shell() tut nur SO, als wuerde die Shell die
+# angehaengten Befehle ausfuehren, und liefert frei erfundene Ausgaben.
+# Die Challenge bleibt loesbar (man sieht "sein" Befehlsergebnis), aber
+# ein Angreifer kann hierueber nichts Echtes auf dem Rechner anrichten.
+# Die verwundbare String-Verkettung (cmd = "ping ... " + host) bleibt
+# zu Lernzwecken sichtbar, wird aber nicht an eine echte Shell gegeben.
+# ===================================================================
+def _fake_befehl(befehl, ist_windows):
+    """Erfundene Ausgabe fuer einen angehaengten Befehl – ohne echte Ausfuehrung."""
+    wort = (befehl.split() or [""])[0].lower()
+    tabelle_win = {
+        "whoami": "rezeptbox-server\\schulung",
+        "hostname": "rezeptbox-server",
+        "id": "'id' ist kein bekannter Befehl.",
+        "ver": "Microsoft Windows [Version 10.0.26300.0]",
+        "ipconfig": "   IPv4-Adresse . . . . . . . . . . : 10.0.0.42",
+        "dir": ("app.py\nrequirements.txt\nstart.ps1\nstop.ps1\n"
+                "static\ntemplates\nrezepte.db"),
+    }
+    tabelle_unix = {
+        "id": "uid=1000(schulung) gid=1000(schulung) groups=1000(schulung)",
+        "whoami": "schulung",
+        "hostname": "rezeptbox-server",
+        "uname": "Linux rezeptbox-server 6.1.0 x86_64 GNU/Linux",
+        "ifconfig": "inet 10.0.0.42  netmask 255.255.255.0",
+        "ls": ("app.py  requirements.txt  start.ps1  stop.ps1  "
+               "static  templates  rezepte.db"),
+    }
+    tabelle = tabelle_win if ist_windows else tabelle_unix
+    if wort in tabelle:
+        return tabelle[wort]
+    # Unbekannter Befehl: ehrlich als Simulation kennzeichnen (nichts lief wirklich).
+    return f"[simuliert] Befehl '{befehl}' wurde nur zum Schein ausgefuehrt."
+
+
+def _simuliere_shell(host):
+    """Taeuscht Command Injection nur VOR – fuehrt NICHTS Echtes aus.
+
+    Zerlegt die Eingabe an den ueblichen Shell-Trennern und liefert fuer
+    den Ping-Teil sowie fuer angehaengte Befehle eine erfundene Ausgabe.
+    """
+    import re
+    ist_windows = os.name == "nt"
+    teile = [t.strip() for t in re.split(r"&&|\|\||[;&|\n`]", host) if t.strip()]
+    ziel = teile[0] if teile else "127.0.0.1"
+    angehaengt = teile[1:]
+
+    zeilen = []
+    if ist_windows:
+        zeilen += [
+            f"Ping wird ausgefuehrt fuer {ziel} mit 32 Bytes Daten:",
+            f"Antwort von {ziel}: Bytes=32 Zeit<1ms TTL=128",
+            "",
+        ]
+    else:
+        zeilen += [
+            f"PING {ziel} 56(84) bytes of data.",
+            f"64 bytes from {ziel}: icmp_seq=1 ttl=64 time=0.034 ms",
+            "",
+        ]
+    for b in angehaengt:
+        zeilen.append(_fake_befehl(b, ist_windows))
+    return "\n".join(zeilen) + "\n"
+
+
 @app.route("/tools", methods=["GET", "POST"])
 def tools():
     if not session.get("user"):
@@ -457,16 +526,11 @@ def tools():
     cmd = None
     if request.method == "POST":
         host = request.form.get("host", "")
-        # ===============================================================
-        # !!! BEWUSST UNSICHER !!!  OS Command Injection
-        # Die Eingabe wird direkt an die System-Shell übergeben.
-        # Mit einem Trenner lassen sich beliebige Befehle anhängen, z. B.:
-        #   Windows:   127.0.0.1 & whoami
-        #   Linux/Mac: 127.0.0.1; id
-        # ===============================================================
+        # Verwundbar AUSSEHENDE String-Verkettung bleibt sichtbar (Lerneffekt),
+        # wird aber NICHT an eine echte Shell uebergeben, sondern simuliert.
         ping_count = "-n" if os.name == "nt" else "-c"
         cmd = "ping " + ping_count + " 1 " + host
-        output = os.popen(cmd).read()
+        output = _simuliere_shell(host)
 
     return render_template("tools.html", output=output, cmd=cmd)
 
