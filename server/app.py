@@ -24,7 +24,40 @@ from flask import (
 )
 
 app = Flask(__name__)
-app.secret_key = "__ENTFERNT_AUS_HISTORIE__"  # bewusst simpel, nur Demo
+
+# ---------------------------------------------------------------------------
+# Geheimnisse (secret_key + Seed-Passwoerter) stehen NICHT im getrackten Code,
+# sondern in der gitignoreten Datei server/geheim.local.json. Fehlt sie (z. B.
+# frischer Clone), erzeugt die App sichere Zufallswerte und speichert sie dort.
+# Fuer die Schulung (Challenge 11 = schwacher secret_key) die Datei mit einem
+# bewusst schwachen secret_key befuellen. Alternativ secret_key per Umgebungs-
+# variable SECRET_KEY setzen.
+# ---------------------------------------------------------------------------
+def _lade_geheimnisse():
+    import json
+    import secrets as _secrets
+    pfad = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "geheim.local.json")
+    if os.path.exists(pfad):
+        with open(pfad, encoding="utf-8") as f:
+            return json.load(f)
+    daten = {
+        "secret_key": _secrets.token_hex(32),
+        "users": [
+            {"username": "admin", "password": _secrets.token_urlsafe(9)},
+            {"username": "mia", "password": _secrets.token_urlsafe(9)},
+            {"username": "ben", "password": _secrets.token_urlsafe(9)},
+        ],
+    }
+    with open(pfad, "w", encoding="utf-8") as f:
+        json.dump(daten, f, indent=2, ensure_ascii=False)
+    print("[RezeptBox] geheim.local.json neu erzeugt (Zufallswerte). "
+          "Fuer Challenge 11 einen schwachen secret_key eintragen.")
+    return daten
+
+
+_GEHEIM = _lade_geheimnisse()
+app.secret_key = os.environ.get("SECRET_KEY", _GEHEIM["secret_key"])
 
 # ---------------------------------------------------------------------------
 # Datenbank-Anbindung  (MySQL laut Anforderung, SQLite als Zero-Setup-Option)
@@ -96,11 +129,8 @@ def init_db():
     cur.execute("SELECT COUNT(*) FROM users")
     count = cur.fetchone()[0]
     if count == 0:
-        seed_users = [
-            ("admin", "__ENTFERNT__"),
-            ("mia", "__ENTFERNT__"),
-            ("ben", "__ENTFERNT__"),
-        ]
+        # Seed-Passwoerter kommen aus geheim.local.json (nicht aus dem Code)
+        seed_users = [(u["username"], u["password"]) for u in _GEHEIM["users"]]
         seed_rezepte = [
             ("Omas Apfelkuchen",
              "Zutaten: 4 Äpfel, 200 g Mehl, 150 g Zucker, 3 Eier, 1 Pck. "

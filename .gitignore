@@ -19,3 +19,6 @@ Thumbs.db
 # Challenge-Loesungen: NIE auf GitHub (nur lokal fuer Lehrende)
 doku/CHALLENGE-LOESUNGEN.md
 doku/LUECKEN.md
+
+# Lokale Geheimnisse: secret_key + Seed-Passwoerter (nie auf GitHub)
+server/geheim.local.json

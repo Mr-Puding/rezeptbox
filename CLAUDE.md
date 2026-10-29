@@ -84,12 +84,16 @@ Schwachstellen praktisch finden und ausnutzen.
 3. `doku/CHALLENGES.md`: passende Challenge mit Adresse (`http://<IP>:8000/...`) ergänzen.
 4. Changelog-Eintrag in `doku/LUECKEN.md` mit Datum.
 
-## Test-Accounts
-| Benutzer | Passwort        |
-|----------|-----------------|
-| admin    | __ENTFERNT__ |
-| mia      | __ENTFERNT__       |
-| ben      | __ENTFERNT__      |
+## Test-Accounts & secret_key (lokal, nicht im Repo)
+- **Seit 2026-10-29** stehen Seed-Passwörter und `secret_key` **nicht mehr im Code**,
+  sondern in `server/geheim.local.json` (gitignored). `app.py` liest sie dort; fehlt
+  die Datei (fremder Clone), erzeugt die App sichere Zufallswerte und schreibt sie neu.
+- **Werte dieses Rechners stehen in `server/geheim.local.json`** – dort nachsehen
+  (admin / mia / ben + schwacher `secret_key`). Nicht in getrackte Dateien kopieren.
+- Auf einem anderen Rechner Schulungswerte so wiederherstellen: Datei anlegen mit
+  `{"secret_key": "...", "users": [{"username":"admin","password":"..."}, ...]}` –
+  für **Challenge 11** muss der `secret_key` bewusst schwach sein (sonst nicht lösbar).
+- Alternativ `secret_key` per Umgebungsvariable `SECRET_KEY` setzen.
 
 ## Fallstricke
 - **XSS-Payloads bleiben in der DB.** Nach eigenen Tests angelegte Rezepte mit

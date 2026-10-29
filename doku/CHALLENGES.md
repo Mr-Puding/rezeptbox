@@ -8,7 +8,7 @@
 > _(Läuft der Server auf einem anderen Rechner, dort die IP anpassen –
 > `http://<SERVER-IP>:8000`. „localhost" funktioniert nur auf dem Server selbst.)_
 
-**Test-Account zum Einloggen:** `mia` / `__ENTFERNT__`
+**Test-Account zum Einloggen:** wird in der Schulung bekanntgegeben.
 _(Challenge 1 schafft man auch ganz ohne gültiges Passwort.)_
 
 ---

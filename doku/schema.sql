@@ -18,10 +18,8 @@ CREATE TABLE IF NOT EXISTS rezepte (
   status VARCHAR(50)
 );
 
-INSERT INTO users (username, password) VALUES
-  ('admin', '__ENTFERNT__'),
-  ('mia',   '__ENTFERNT__'),
-  ('ben',   '__ENTFERNT__');
+-- Benutzerkonten werden von der App aus server/geheim.local.json angelegt
+-- (bewusst NICHT hier im Klartext, damit keine Passwoerter ins Repo gelangen).
 
 INSERT INTO rezepte (title, content, author, status) VALUES
   ('Omas Apfelkuchen',
